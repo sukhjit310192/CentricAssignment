@@ -4,7 +4,6 @@ import com.sukhjit.assignment.model.Product;
 import com.sukhjit.assignment.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +12,8 @@ public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
+
 
     public List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
@@ -23,5 +24,12 @@ public class ProductService {
     public void addProduct(Product product) {
         productRepository.save(product);
     }
+
+    public List<Product> searchProductByCategory(String category) {
+        List<Product> list = new ArrayList<>();
+        productRepository.findAll().removeIf(entry -> entry.getCategory().equalsIgnoreCase(category));
+        return list;
+    }
+
 
 }

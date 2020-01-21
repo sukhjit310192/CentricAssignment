@@ -3,6 +3,8 @@ package com.sukhjit.assignment.service;
 import com.sukhjit.assignment.model.Product;
 import com.sukhjit.assignment.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +14,6 @@ public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
-
 
 
     public List<Product> getAllProducts() {
@@ -25,11 +26,12 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public List<Product> searchProductByCategory(String category) {
-        List<Product> list = new ArrayList<>();
-        productRepository.findAll().removeIf(entry -> entry.getCategory().equalsIgnoreCase(category));
-        return list;
-    }
+    public List<Product> searchProductByCategory(String category, Integer pageNo, Integer pageSize) {
 
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        List<Product> listResult = productRepository.findByCategoryOrderByCreatedAtDesc(pageable, category);
+
+        return listResult;
+    }
 
 }

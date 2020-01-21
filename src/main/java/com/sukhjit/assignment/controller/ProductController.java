@@ -7,9 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Comparator;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @RestController
@@ -17,25 +17,33 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @RequestMapping("/v1/products")
-    public List<Product> getAllProducts(){
-        return productService.getAllProducts();
+    @GetMapping("/v1/products")
+    public ResponseEntity<List<Product>> getAllProducts()
+    {
+        List<Product> list = productService.getAllProducts();
+        return new ResponseEntity<List<Product>>(list, HttpStatus.OK);
     }
+
 
     @PostMapping("/v1/products")
-    public ResponseEntity<Product> addProduct(@RequestBody Product product){
+    public ResponseEntity<Product> addProduct(@RequestBody Product product)
+    {
         productService.addProduct(product);
-        return new ResponseEntity<>(product, HttpStatus.OK);
+        return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
 
-    @RequestMapping("/v1/products/{category}")
-    public ResponseEntity<List<Product>> searchProductByCategory(@PathVariable String category){
-         productService.searchProductByCategory(category);
-        return new ResponseEntity<>(productService.getAllProducts()
-                .stream().filter(x -> x.getCategory().equalsIgnoreCase(category))
-                .sorted(Comparator.comparing(Product::getCreated_at).reversed())
-                .collect(Collectors.toList())
-                , HttpStatus.OK);
+    @GetMapping("/v1/products/search")
+    public ResponseEntity<List<Product>> searchProductByCategory(@RequestParam("category")  String category,
+                                                                 @RequestParam(defaultValue = "0") Integer pageNo,
+                                                                 @RequestParam(defaultValue = "10") Integer pageSize)
+    {
+        List<Product> list = productService.searchProductByCategory(category, pageNo, pageSize);
+        if(list.isEmpty()) {
+            return new ResponseEntity<List<Product>>(list, HttpStatus.NO_CONTENT);
+        }
+        else {
+            return new ResponseEntity<List<Product>>(list, HttpStatus.FOUND);
+        }
     }
 
 }

@@ -26,19 +26,19 @@ public class Product {
 
     @CreationTimestamp
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ssX")
-    private Date created_at;
+    private Date createdAt;
 
     public Product() {
     }
 
-    public Product(String id, String name, String description, String brand, List<String> tags, String category, Date created_at) {
+    public Product(String id, String name, String description, String brand, List<String> tags, String category, Date createdAt) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.brand = brand;
         this.tags = tags;
         this.category = category;
-        this.created_at = created_at;
+        this.createdAt = createdAt;
     }
 
     public String getId() {
@@ -89,11 +89,11 @@ public class Product {
         this.category = category;
     }
 
-    public Date getCreated_at() {
-        return created_at;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(Date created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(Date created_at) {
+        this.createdAt = created_at;
     }
 }
